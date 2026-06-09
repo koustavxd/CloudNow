@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloudNow - Game Creator & Settings</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --accent: #ec4899;
+            --dark-bg: #0f172a;
+            --card-bg: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --border-color: #334155;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--dark-bg) 0%, #1a1f3a 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: white;
+            text-decoration: none;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            transition: background 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            padding: 1rem 1.5rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            font-weight: 600;
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-btn:hover {
+            color: var(--text-primary);
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Create Game Section */
+        .create-game-container {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.9rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(102, 126, 234, 0.1);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .btn {
+            padding: 0.9rem 1.8rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn-secondary {
+            background: rgba(102, 126, 234, 0.1);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(102, 126, 234, 0.2);
+        }
+
+        /* Games List */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .game-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            animation: slideUp 0.5s ease;
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.2);
+            border-color: var(--primary);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .game-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            padding: 1rem;
+            color: white;
+            text-align: center;
+        }
+
+        .game-header h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .game-header p {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .game-body {
+            padding: 1.5rem;
+        }
+
+        .game-desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            min-height: 50px;
+        }
+
+        .game-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .game-buttons {
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .game-buttons button {
+            flex: 1;
+            padding: 0.7rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+        }
+
+        .btn-edit {
+            background: rgba(102, 126, 234, 0.2);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        .btn-edit:hover {
+            background: rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-play {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+        }
+
+        .btn-play:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        /* World Editor */
+        .world-editor {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .canvas-container {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1rem;
+            min-height: 600px;
+        }
+
+        #gameCanvas {
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            background: #87ceeb;
+            display: block;
+            margin: 0 auto;
+            cursor: crosshair;
+        }
+
+        .block-selector {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+
+        .block-selector h3 {
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .block-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.8rem;
+        }
+
+        .block {
+            width: 100%;
+            aspect-ratio: 1;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .block:hover {
+            transform: scale(1.05);
+            border-color: var(--primary);
+        }
+
+        .block.selected {
+            border-color: var(--accent);
+            background: rgba(236, 72, 153, 0.2);
+            transform: scale(1.1);
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .control-group {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .control-group label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .control-group input[type="range"] {
+            width: 100px;
+        }
+
+        /* Code Editor */
+        .code-editor {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .code-editor h3 {
+            margin-bottom: 1rem;
+        }
+
+        .code-area {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        textarea#gameCode {
+            flex: 1;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: #0f0f23;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            min-height: 300px;
+            resize: vertical;
+        }
+
+        .console-output {
+            flex: 1;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: #0f0f23;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            min-height: 300px;
+            overflow-y: auto;
+            max-height: 300px;
+        }
+
+        .console-output p {
+            margin: 0.25rem 0;
+        }
+
+        .code-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            justify-content: flex-end;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-btn:hover {
+            color: var(--text-primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .world-editor {
+                grid-template-columns: 1fr;
+            }
+
+            .block-selector {
+                position: static;
+            }
+
+            .tabs {
+                overflow-x: auto;
+            }
+
+            .code-area {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="home.html" class="logo">
+                <span>☁️</span>
+                <h1>CloudNow - Game Creator</h1>
+            </a>
+            <div class="nav-links">
+                <a href="home.html" class="nav-link">Home</a>
+                <a href="settings.html" class="nav-link">Creator</a>
+                <button class="logout-btn" onclick="handleLogout()">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Container -->
+    <div class="container">
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('my-games')">My Games</button>
+            <button class="tab-btn" onclick="switchTab('create-game')">Create Game</button>
+            <button class="tab-btn" onclick="switchTab('settings')">Settings</button>
+        </div>
+
+        <!-- My Games Tab -->
+        <div class="tab-content active" id="my-games">
+            <h2 style="margin-bottom: 2rem;">My Games</h2>
+            <div class="games-grid" id="gamesGrid">
+                <!-- Games will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Create Game Tab -->
+        <div class="tab-content" id="create-game">
+            <div class="create-game-container">
+                <h2 style="margin-bottom: 1.5rem;">Create New Game</h2>
+                <form id="createGameForm" onsubmit="createGame(event)">
+                    <div class="form-group">
+                        <label>Game Name</label>
+                        <input type="text" id="gameName" placeholder="Enter game name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="gameDescription" placeholder="Describe your game..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create Game</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- World Editor (Hidden until game is created) -->
+        <div id="worldEditorContainer" style="display: none;">
+            <h2 style="margin-bottom: 1.5rem;">World Builder: <span id="currentGameName"></span></h2>
+
+            <!-- Controls -->
+            <div class="controls">
+                <div class="control-group">
+                    <label>Grid Size:</label>
+                    <input type="range" id="gridSize" min="20" max="80" value="40">
+                </div>
+                <button class="btn btn-secondary" onclick="clearCanvas()">Clear Canvas</button>
+                <button class="btn btn-secondary" onclick="saveWorld()">Save World</button>
+            </div>
+
+            <!-- World Editor -->
+            <div class="world-editor">
+                <div class="canvas-container">
+                    <canvas id="gameCanvas" width="800" height="600"></canvas>
+                </div>
+
+                <!-- Block Selector -->
+                <div class="block-selector">
+                    <h3>Blocks</h3>
+                    <div class="block-grid">
+                        <div class="block selected" data-block="grass" onclick="selectBlock('grass')">🟩</div>
+                        <div class="block" data-block="dirt" onclick="selectBlock('dirt')">🟫</div>
+                        <div class="block" data-block="stone" onclick="selectBlock('stone')">⬜</div>
+                        <div class="block" data-block="wood" onclick="selectBlock('wood')">🟧</div>
+                        <div class="block" data-block="water" onclick="selectBlock('water')">🟦</div>
+                        <div class="block" data-block="lava" onclick="selectBlock('lava')">🟥</div>
+                        <div class="block" data-block="glass" onclick="selectBlock('glass')">💎</div>
+                        <div class="block" data-block="gold" onclick="selectBlock('gold')">🟨</div>
+                        <div class="block" data-block="air" onclick="selectBlock('air')">⬛</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Code Editor -->
+            <div class="code-editor">
+                <h3>Game Code</h3>
+                <div style="margin-bottom: 1rem;">
+                    <p style="color: var(--text-secondary); font-size: 0.9rem;">Write JavaScript to control your game logic and player behavior.</p>
+                </div>
+                <div class="code-area">
+                    <textarea id="gameCode" placeholder="// Write your game code here&#10;// Available: player, world, keyboard, addBlock(), removeBlock()&#10;&#10;function update() {&#10;    // Game logic&#10;}&#10;&#10;function draw() {&#10;    // Draw your game&#10;}"></textarea>
+                    <div class="console-output" id="consoleOutput"></div>
+                </div>
+                <div class="code-buttons">
+                    <button class="btn btn-primary" onclick="runCode()">▶ Run Game</button>
+                    <button class="btn btn-secondary" onclick="stopGame()">⏹ Stop Game</button>
+                    <button class="btn btn-secondary" onclick="clearConsole()">Clear Console</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div class="tab-content" id="settings">
+            <div class="create-game-container">
+                <h2 style="margin-bottom: 1.5rem;">Settings</h2>
+                <form onsubmit="saveSettings(event)">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" id="username" placeholder="Your username">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="email" placeholder="Your email" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="multiplayerEnabled"> Enable Multiplayer
+                        </label>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save Settings</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Game Modal -->
+    <div class="modal" id="editGameModal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('editGameModal')">&times;</button>
+            <div class="modal-header">Edit Game</div>
+            <form onsubmit="saveGameEdit(event)">
+                <div class="form-group">
+                    <label>Game Name</label>
+                    <input type="text" id="editGameName" required>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="editGameDescription"></textarea>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('editGameModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </form>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Game data structure
+        let games = [];
+        let currentGame = null;
+        let gameRunning = false;
+        let selectedBlock = 'grass';
+        let worldData = [];
+        let gameAnimationId = null;
+        const blockColors = {
+            'grass': '#22c55e',
+            'dirt': '#8b4513',
+            'stone': '#808080',
+            'wood': '#cd853f',
+            'water': '#0099ff',
+            'lava': '#ff6600',
+            'glass': '#87ceeb',
+            'gold': '#ffd700',
+            'air': '#transparent'
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadUserData();
+            loadGames();
+            setupCanvasEvents();
+            setupConsole();
+        });
+
+        // Load user data
+        function loadUserData() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (!user || !user.loggedIn) {
+                window.location.href = 'auth.html';
+                return;
+            }
+            document.getElementById('email').value = user.email;
+            document.getElementById('username').value = user.name;
+        }
+
+        // Load games from localStorage
+        function loadGames() {
+            const savedGames = localStorage.getItem('cloudNowGames');
+            games = savedGames ? JSON.parse(savedGames) : [];
+            renderGames();
+        }
+
+        // Save games to localStorage
+        function saveGamesToStorage() {
+            localStorage.setItem('cloudNowGames', JSON.stringify(games));
+        }
+
+        // Render games grid
+        function renderGames() {
+            const gamesGrid = document.getElementById('gamesGrid');
+            gamesGrid.innerHTML = '';
+
+            if (games.length === 0) {
+                gamesGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-secondary);">No games yet. Create one!</p>';
+                return;
+            }
+
+            games.forEach((game, index) => {
+                const card = document.createElement('div');
+                card.className = 'game-card';
+                card.innerHTML = `
+                    <div class="game-header">
+                        <h3>🎮 ${game.name}</h3>
+                        <p>By ${game.creator}</p>
+                    </div>
+                    <div class="game-body">
+                        <div class="game-desc">${game.description || 'No description'}</div>
+                        <div class="game-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">${game.blocks || 0}</div>
+                                <div class="stat-label">Blocks</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">${game.players || 0}</div>
+                                <div class="stat-label">Players</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">${new Date(game.created).toLocaleDateString()}</div>
+                                <div class="stat-label">Date</div>
+                            </div>
+                        </div>
+                        <div class="game-buttons">
+                            <button class="btn-edit" onclick="editGame(${index})">✏️ Edit</button>
+                            <button class="btn-play" onclick="playGame(${index})">▶ Play</button>
+                        </div>
+                    </div>
+                `;
+                gamesGrid.appendChild(card);
+            });
+        }
+
+        // Create game
+        function createGame(event) {
+            event.preventDefault();
+            const name = document.getElementById('gameName').value;
+            const description = document.getElementById('gameDescription').value;
+            const user = JSON.parse(localStorage.getItem('user'));
+
+            const game = {
+                id: Date.now(),
+                name,
+                description,
+                creator: user.name,
+                created: new Date().toISOString(),
+                worldData: [],
+                code: '',
+                blocks: 0,
+                players: 0
+            };
+
+            games.push(game);
+            saveGamesToStorage();
+            currentGame = game;
+            
+            // Show world editor
+            document.getElementById('createGameForm').reset();
+            document.getElementById('currentGameName').textContent = game.name;
+            document.getElementById('worldEditorContainer').style.display = 'block';
+            
+            // Scroll to editor
+            setTimeout(() => {
+                document.getElementById('worldEditorContainer').scrollIntoView({ behavior: 'smooth' });
+            }, 100);
+        }
+
+        // Setup canvas
+        function setupCanvasEvents() {
+            const canvas = document.getElementById('gameCanvas');
+            const ctx = canvas.getContext('2d');
+            let isDrawing = false;
+
+            canvas.addEventListener('mousedown', (e) => {
+                isDrawing = true;
+                placeBlock(e, canvas);
+            });
+
+            canvas.addEventListener('mousemove', (e) => {
+                if (isDrawing) placeBlock(e, canvas);
+            });
+
+            canvas.addEventListener('mouseup', () => {
+                isDrawing = false;
+            });
+
+            canvas.addEventListener('mouseout', () => {
+                isDrawing = false;
+            });
+
+            canvas.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                removeBlock(e, canvas);
+            });
+        }
+
+        // Place block
+        function placeBlock(e, canvas) {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const gridSize = parseInt(document.getElementById('gridSize').value);
+
+            const gridX = Math.floor(x / gridSize);
+            const gridY = Math.floor(y / gridSize);
+
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = blockColors[selectedBlock];
+            ctx.fillRect(gridX * gridSize, gridY * gridSize, gridSize, gridSize);
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 1;
+            ctx.strokeRect(gridX * gridSize, gridY * gridSize, gridSize, gridSize);
+
+            // Save to worldData
+            const key = `${gridX},${gridY}`;
+            worldData[key] = selectedBlock;
+        }
+
+        // Remove block
+        function removeBlock(e, canvas) {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const gridSize = parseInt(document.getElementById('gridSize').value);
+
+            const gridX = Math.floor(x / gridSize);
+            const gridY = Math.floor(y / gridSize);
+
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#87ceeb';
+            ctx.fillRect(gridX * gridSize, gridY * gridSize, gridSize, gridSize);
+
+            const key = `${gridX},${gridY}`;
+            delete worldData[key];
+        }
+
+        // Select block
+        function selectBlock(type) {
+            document.querySelectorAll('.block').forEach(b => b.classList.remove('selected'));
+            event.target.closest('.block').classList.add('selected');
+            selectedBlock = type;
+        }
+
+        // Clear canvas
+        function clearCanvas() {
+            if (confirm('Clear all blocks? This cannot be undone.')) {
+                const canvas = document.getElementById('gameCanvas');
+                const ctx = canvas.getContext('2d');
+                ctx.fillStyle = '#87ceeb';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                worldData = [];
+            }
+        }
+
+        // Save world
+        function saveWorld() {
+            if (currentGame) {
+                currentGame.worldData = worldData;
+                currentGame.blocks = Object.keys(worldData).length;
+                saveGamesToStorage();
+                alert('World saved!');
+            }
+        }
+
+        // Setup console
+        function setupConsole() {
+            const originalLog = console.log;
+            console.log = function(...args) {
+                originalLog.apply(console, args);
+                appendConsole(args.join(' '));
+            };
+        }
+
+        // Append to console
+        function appendConsole(text) {
+            const output = document.getElementById('consoleOutput');
+            const p = document.createElement('p');
+            p.textContent = '> ' + text;
+            output.appendChild(p);
+            output.scrollTop = output.scrollHeight;
+        }
+
+        // Clear console
+        function clearConsole() {
+            document.getElementById('consoleOutput').innerHTML = '';
+        }
+
+        // Run game code
+        function runCode() {
+            if (!currentGame) {
+                alert('Please create or select a game first!');
+                return;
+            }
+
+            const code = document.getElementById('gameCode').value;
+            clearConsole();
+            appendConsole('Game started...');
+
+            try {
+                const player = {
+                    x: 50,
+                    y: 50,
+                    width: 20,
+                    height: 30,
+                    color: '#ff6b6b',
+                    jump: function() { appendConsole('Player jumped!'); },
+                    move: function(x, y) { this.x = x; this.y = y; }
+                };
+
+                const world = {
+                    blocks: worldData,
+                    width: 800,
+                    height: 600,
+                    addBlock: function(x, y, type) {
+                        this.blocks[`${x},${y}`] = type;
+                        appendConsole(`Block added at ${x},${y}`);
+                    },
+                    removeBlock: function(x, y) {
+                        delete this.blocks[`${x},${y}`];
+                        appendConsole(`Block removed from ${x},${y}`);
+                    }
+                };
+
+                const keyboard = {
+                    keys: {},
+                    isPressed: function(key) { return this.keys[key] || false; }
+                };
+
+                // Execute user code
+                const func = new Function('player', 'world', 'keyboard', 'addBlock', 'removeBlock', code);
+                func(player, world, keyboard, 
+                    (x, y, type) => world.addBlock(x, y, type),
+                    (x, y) => world.removeBlock(x, y)
+                );
+
+                appendConsole('Game executed successfully!');
+                gameRunning = true;
+                animateGame(player);
+            } catch (error) {
+                appendConsole('Error: ' + error.message);
+            }
+        }
+
+        // Animate game
+        function animateGame(player) {
+            const canvas = document.getElementById('gameCanvas');
+            const ctx = canvas.getContext('2d');
+
+            function frame() {
+                // Draw world
+                ctx.fillStyle = '#87ceeb';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Draw blocks
+                const gridSize = parseInt(document.getElementById('gridSize').value);
+                Object.keys(worldData).forEach(key => {
+                    const [x, y] = key.split(',').map(Number);
+                    ctx.fillStyle = blockColors[worldData[key]];
+                    ctx.fillRect(x * gridSize, y * gridSize, gridSize, gridSize);
+                    ctx.strokeStyle = '#000';
+                    ctx.lineWidth = 1;
+                    ctx.strokeRect(x * gridSize, y * gridSize, gridSize, gridSize);
+                });
+
+                // Draw player (blocky character)
+                ctx.fillStyle = '#ff6b6b';
+                ctx.fillRect(player.x, player.y, player.width, player.height);
+                // Head
+                ctx.fillStyle = '#ffb366';
+                ctx.fillRect(player.x + 2, player.y - 15, 16, 15);
+                // Eyes
+                ctx.fillStyle = '#000';
+                ctx.fillRect(player.x + 5, player.y - 12, 3, 3);
+                ctx.fillRect(player.x + 13, player.y - 12, 3, 3);
+
+                if (gameRunning) {
+                    gameAnimationId = requestAnimationFrame(frame);
+                }
+            }
+
+            frame();
+        }
+
+        // Stop game
+        function stopGame() {
+            gameRunning = false;
+            if (gameAnimationId) {
+                cancelAnimationFrame(gameAnimationId);
+            }
+            appendConsole('Game stopped.');
+        }
+
+        // Edit game
+        function editGame(index) {
+            currentGame = games[index];
+            document.getElementById('editGameName').value = currentGame.name;
+            document.getElementById('editGameDescription').value = currentGame.description;
+            document.getElementById('editGameModal').classList.add('active');
+        }
+
+        // Save game edit
+        function saveGameEdit(event) {
+            event.preventDefault();
+            currentGame.name = document.getElementById('editGameName').value;
+            currentGame.description = document.getElementById('editGameDescription').value;
+            saveGamesToStorage();
+            renderGames();
+            closeModal('editGameModal');
+            alert('Game updated!');
+        }
+
+        // Play game
+        function playGame(index) {
+            currentGame = games[index];
+            document.getElementById('currentGameName').textContent = currentGame.name;
+            document.getElementById('worldEditorContainer').style.display = 'block';
+            switchTab('create-game');
+
+            // Load world
+            const canvas = document.getElementById('gameCanvas');
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#87ceeb';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            worldData = currentGame.worldData || [];
+            const gridSize = parseInt(document.getElementById('gridSize').value);
+            
+            Object.keys(worldData).forEach(key => {
+                const [x, y] = key.split(',').map(Number);
+                ctx.fillStyle = blockColors[worldData[key]];
+                ctx.fillRect(x * gridSize, y * gridSize, gridSize, gridSize);
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 1;
+                ctx.strokeRect(x * gridSize, y * gridSize, gridSize, gridSize);
+            });
+
+            document.getElementById('gameCode').value = currentGame.code || '';
+            
+            setTimeout(() => {
+                document.getElementById('worldEditorContainer').scrollIntoView({ behavior: 'smooth' });
+            }, 100);
+        }
+
+        // Switch tabs
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Save settings
+        function saveSettings(event) {
+            event.preventDefault();
+            const user = JSON.parse(localStorage.getItem('user'));
+            user.name = document.getElementById('username').value;
+            localStorage.setItem('user', JSON.stringify(user));
+            alert('Settings saved!');
+        }
+
+        // Modal functions
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Logout
+        function handleLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('user');
+                window.location.href = 'auth.html';
+            }
+        }
+    </script>
+</body>
+</html>
