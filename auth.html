@@ -341,7 +341,7 @@
     <!-- Navigation Bar -->
     <nav class="navbar">
         <div class="nav-container">
-            <a href="#" class="logo">
+            <a href="home.html" class="logo">
                 <span class="logo-icon">☁️</span>
                 <h1>CloudNow</h1>
             </a>
@@ -502,6 +502,14 @@
     </div>
 
     <script>
+        // Check if user is already logged in
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (user && user.loggedIn) {
+                window.location.href = 'home.html';
+            }
+        });
+
         // Toggle between login and signup
         function toggleAuth() {
             const loginCard = document.getElementById('loginCard');
@@ -548,14 +556,24 @@
                 return;
             }
 
+            // Store user data in localStorage
+            localStorage.setItem('user', JSON.stringify({ 
+                email, 
+                name: email.split('@')[0], 
+                loggedIn: true 
+            }));
+            
+            if (remember) {
+                localStorage.setItem('rememberMe', 'true');
+            }
+
             // Simulate API call
             console.log('Login attempt:', { email, password, remember });
-            showSuccess('loginSuccess', '✓ Login successful! Redirecting...');
+            showSuccess('loginSuccess', '✓ Login successful! Redirecting to home...');
 
-            // Simulate redirect after 2 seconds
+            // Redirect to home page after 2 seconds
             setTimeout(() => {
-                alert('Redirecting to dashboard...');
-                // window.location.href = '/dashboard';
+                window.location.href = 'home.html';
             }, 2000);
         }
 
@@ -598,14 +616,20 @@
                 return;
             }
 
+            // Store user data in localStorage
+            localStorage.setItem('user', JSON.stringify({ 
+                email, 
+                name: fullname, 
+                loggedIn: true 
+            }));
+
             // Simulate API call
             console.log('Signup attempt:', { fullname, email, password });
-            showSuccess('signupSuccess', '✓ Account created successfully! Signing in...');
+            showSuccess('signupSuccess', '✓ Account created successfully! Redirecting to home...');
 
-            // Simulate redirect after 2 seconds
+            // Redirect to home page after 2 seconds
             setTimeout(() => {
-                alert('Account created! Redirecting to dashboard...');
-                // window.location.href = '/dashboard';
+                window.location.href = 'home.html';
             }, 2000);
         }
 
