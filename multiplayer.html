@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloudNow - Multiplayer Game Arena</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --accent: #ec4899;
+            --dark-bg: #0f172a;
+            --card-bg: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --border-color: #334155;
+            --success: #10b981;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--dark-bg) 0%, #1a1f3a 100%);
+            color: var(--text-primary);
+            overflow: hidden;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 1rem 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: white;
+            text-decoration: none;
+        }
+
+        .logo h1 {
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+
+        .game-title {
+            color: white;
+            font-size: 1rem;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+
+        .btn-small:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Main Layout */
+        .main-container {
+            display: grid;
+            grid-template-columns: 1fr 280px;
+            height: calc(100vh - 70px);
+            gap: 0;
+        }
+
+        /* Game Canvas */
+        .game-viewport {
+            background: #87ceeb;
+            position: relative;
+            overflow: hidden;
+            border-right: 2px solid var(--border-color);
+        }
+
+        #gameCanvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            background: #87ceeb;
+        }
+
+        /* Right Panel */
+        .side-panel {
+            background: var(--card-bg);
+            border-left: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .panel-section {
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .panel-section h3 {
+            font-size: 0.95rem;
+            margin-bottom: 0.8rem;
+            color: var(--primary);
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        /* Players List */
+        .players-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .player-item {
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 0.85rem;
+        }
+
+        .player-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 4px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+        }
+
+        .player-info {
+            flex: 1;
+        }
+
+        .player-name {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .player-status {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+        }
+
+        /* Chat */
+        .chat-messages {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+        }
+
+        .chat-message {
+            background: rgba(102, 126, 234, 0.05);
+            border-left: 3px solid var(--primary);
+            padding: 0.6rem;
+            border-radius: 3px;
+            font-size: 0.8rem;
+            line-height: 1.3;
+        }
+
+        .chat-message strong {
+            color: var(--primary);
+        }
+
+        .chat-input-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .chat-input-group input {
+            flex: 1;
+            padding: 0.6rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            font-size: 0.85rem;
+        }
+
+        .chat-input-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .chat-input-group button {
+            padding: 0.6rem 0.8rem;
+            background: var(--primary);
+            border: none;
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* Controls */
+        .controls-info {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .control-item {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .control-key {
+            background: rgba(102, 126, 234, 0.2);
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        /* Stats */
+        .stats-display {
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 0.8rem;
+            font-size: 0.85rem;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.4rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+        }
+
+        .stat-value {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Leaderboard */
+        .leaderboard-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.6rem;
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 4px;
+            font-size: 0.85rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .leaderboard-rank {
+            font-weight: bold;
+            color: var(--primary);
+            min-width: 20px;
+        }
+
+        .leaderboard-name {
+            flex: 1;
+            margin-left: 0.6rem;
+        }
+
+        .leaderboard-score {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .main-container {
+                grid-template-columns: 1fr 200px;
+            }
+
+            .side-panel {
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+
+            .side-panel {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="home.html" class="logo">
+                <span>☁️</span>
+                <h1>CloudNow Game Arena</h1>
+            </a>
+            <div style="flex: 1; text-align: center;">
+                <span class="game-title" id="gameTitle">Loading Game...</span>
+            </div>
+            <div class="nav-buttons">
+                <button class="btn-small" onclick="toggleFullscreen()">⛶ Fullscreen</button>
+                <button class="btn-small" onclick="exitGame()">Exit</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Game Viewport -->
+        <div class="game-viewport">
+            <canvas id="gameCanvas"></canvas>
+        </div>
+
+        <!-- Side Panel -->
+        <div class="side-panel">
+            <!-- Players Section -->
+            <div class="panel-section">
+                <h3>👥 Players Online</h3>
+                <div class="players-list" id="playersList">
+                    <!-- Players will be listed here -->
+                </div>
+            </div>
+
+            <!-- Chat Section -->
+            <div class="panel-section">
+                <h3>💬 Chat</h3>
+                <div class="chat-messages" id="chatMessages"></div>
+                <div class="chat-input-group">
+                    <input type="text" id="chatInput" placeholder="Say something...">
+                    <button onclick="sendMessage()">Send</button>
+                </div>
+            </div>
+
+            <!-- Stats Section -->
+            <div class="panel-section">
+                <h3>📊 Your Stats</h3>
+                <div class="stats-display">
+                    <div class="stat-row">
+                        <span class="stat-label">Score</span>
+                        <span class="stat-value" id="playerScore">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Blocks Placed</span>
+                        <span class="stat-value" id="blocksPlaced">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Kills</span>
+                        <span class="stat-value" id="playerKills">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Deaths</span>
+                        <span class="stat-value" id="playerDeaths">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Controls Section -->
+            <div class="panel-section">
+                <h3>⌨️ Controls</h3>
+                <div class="controls-info">
+                    <div class="control-item">
+                        <span>Move</span>
+                        <span class="control-key">WASD</span>
+                    </div>
+                    <div class="control-item">
+                        <span>Jump</span>
+                        <span class="control-key">Space</span>
+                    </div>
+                    <div class="control-item">
+                        <span>Place Block</span>
+                        <span class="control-key">Mouse</span>
+                    </div>
+                    <div class="control-item">
+                        <span>Break Block</span>
+                        <span class="control-key">Right Click</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Leaderboard Section -->
+            <div class="panel-section">
+                <h3>🏆 Leaderboard</h3>
+                <div id="leaderboard"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game variables
+        let canvas, ctx;
+        let currentGame = null;
+        let currentPlayer = null;
+        let players = [];
+        let gameWorld = [];
+        let gameRunning = true;
+        let keys = {};
+
+        // Player class
+        class Player {
+            constructor(id, name, x, y, color) {
+                this.id = id;
+                this.name = name;
+                this.x = x;
+                this.y = y;
+                this.width = 20;
+                this.height = 30;
+                this.color = color;
+                this.velocityY = 0;
+                this.velocityX = 0;
+                this.speed = 2;
+                this.jumpPower = 12;
+                this.onGround = false;
+                this.score = 0;
+                this.blocksPlaced = 0;
+                this.kills = 0;
+                this.deaths = 0;
+            }
+
+            update() {
+                // Horizontal movement
+                if (keys['w'] || keys['W']) this.velocityY = -this.jumpPower;
+                if (keys['a'] || keys['A']) this.velocityX = -this.speed;
+                if (keys['d'] || keys['D']) this.velocityX = this.speed;
+                if (keys['s'] || keys['S']) this.velocityY = 2;
+
+                // Gravity
+                this.velocityY += 0.5;
+
+                // Update position
+                this.x += this.velocityX;
+                this.y += this.velocityY;
+
+                // Friction
+                this.velocityX *= 0.8;
+
+                // Boundaries
+                if (this.x < 0) this.x = 0;
+                if (this.x + this.width > canvas.width) this.x = canvas.width - this.width;
+                if (this.y > canvas.height) {
+                    this.y = 100;
+                    this.deaths++;
+                }
+
+                this.onGround = false;
+
+                // Collision with ground
+                if (this.y + this.height >= canvas.height - 50) {
+                    this.y = canvas.height - 50 - this.height;
+                    this.velocityY = 0;
+                    this.onGround = true;
+                }
+            }
+
+            draw() {
+                // Body
+                ctx.fillStyle = this.color;
+                ctx.fillRect(this.x, this.y, this.width, this.height);
+
+                // Head
+                ctx.fillStyle = '#ffb366';
+                ctx.fillRect(this.x + 2, this.y - 15, 16, 15);
+
+                // Eyes
+                ctx.fillStyle = '#000';
+                ctx.fillRect(this.x + 5, this.y - 12, 3, 3);
+                ctx.fillRect(this.x + 13, this.y - 12, 3, 3);
+
+                // Name tag
+                ctx.fillStyle = '#fff';
+                ctx.font = 'bold 10px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(this.name, this.x + this.width / 2, this.y - 20);
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadGame();
+            setupCanvas();
+            setupControls();
+            loadPlayers();
+            loadLeaderboard();
+            startGameLoop();
+            loadChatMessages();
+        });
+
+        // Load game data
+        function loadGame() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (!user || !user.loggedIn) {
+                window.location.href = 'auth.html';
+                return;
+            }
+
+            const gameId = new URLSearchParams(window.location.search).get('gameId');
+            const games = JSON.parse(localStorage.getItem('cloudNowGames')) || [];
+            currentGame = games.find(g => g.id == gameId);
+
+            if (!currentGame) {
+                alert('Game not found!');
+                window.location.href = 'home.html';
+                return;
+            }
+
+            document.getElementById('gameTitle').textContent = currentGame.name;
+
+            // Create current player
+            const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#f9ca24', '#6c5ce7', '#a29bfe'];
+            currentPlayer = new Player(
+                user.email,
+                user.name,
+                Math.random() * (canvas?.width - 50 || 750),
+                100,
+                colors[Math.floor(Math.random() * colors.length)]
+            );
+        }
+
+        // Setup canvas
+        function setupCanvas() {
+            canvas = document.getElementById('gameCanvas');
+            ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth - 280;
+            canvas.height = window.innerHeight - 70;
+
+            // Resize on window resize
+            window.addEventListener('resize', () => {
+                canvas.width = window.innerWidth - 280;
+                canvas.height = window.innerHeight - 70;
+            });
+        }
+
+        // Setup keyboard controls
+        function setupControls() {
+            document.addEventListener('keydown', (e) => {
+                keys[e.key] = true;
+            });
+
+            document.addEventListener('keyup', (e) => {
+                keys[e.key] = false;
+            });
+
+            canvas.addEventListener('mousedown', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                if (e.button === 0) {
+                    // Left click - place block
+                    gameWorld.push({ x, y, type: 'grass', color: '#22c55e' });
+                    currentPlayer.blocksPlaced++;
+                    currentPlayer.score += 10;
+                } else if (e.button === 2) {
+                    // Right click - remove block
+                    gameWorld = gameWorld.filter(block => {
+                        const dist = Math.hypot(block.x - x, block.y - y);
+                        if (dist < 15) currentPlayer.score += 5;
+                        return dist >= 15;
+                    });
+                }
+            });
+
+            canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+        }
+
+        // Load players
+        function loadPlayers() {
+            const playersList = document.getElementById('playersList');
+            playersList.innerHTML = '';
+
+            // Add current player
+            const currentPlayerEl = document.createElement('div');
+            currentPlayerEl.className = 'player-item';
+            currentPlayerEl.innerHTML = `
+                <div class="player-avatar" style="background: ${currentPlayer.color};">${currentPlayer.name[0]}</div>
+                <div class="player-info">
+                    <div class="player-name">${currentPlayer.name} (You)</div>
+                    <div class="player-status">Playing</div>
+                </div>
+                <div class="status-indicator"></div>
+            `;
+            playersList.appendChild(currentPlayerEl);
+
+            // Simulate other players
+            const otherPlayers = ['Alice', 'Bob', 'Charlie', 'Diana'];
+            otherPlayers.forEach(name => {
+                const playerEl = document.createElement('div');
+                playerEl.className = 'player-item';
+                const randomColor = ['#4ecdc4', '#45b7d1', '#f9ca24', '#6c5ce7'][Math.floor(Math.random() * 4)];
+                playerEl.innerHTML = `
+                    <div class="player-avatar" style="background: ${randomColor};">${name[0]}</div>
+                    <div class="player-info">
+                        <div class="player-name">${name}</div>
+                        <div class="player-status">Playing</div>
+                    </div>
+                    <div class="status-indicator"></div>
+                `;
+                playersList.appendChild(playerEl);
+            });
+        }
+
+        // Load leaderboard
+        function loadLeaderboard() {
+            const leaderboard = document.getElementById('leaderboard');
+            const scores = [
+                { rank: 1, name: 'Alice', score: 450 },
+                { rank: 2, name: currentPlayer.name, score: 320 },
+                { rank: 3, name: 'Bob', score: 280 },
+                { rank: 4, name: 'Charlie', score: 200 },
+                { rank: 5, name: 'Diana', score: 150 }
+            ];
+
+            leaderboard.innerHTML = scores.map(s => `
+                <div class="leaderboard-item">
+                    <span class="leaderboard-rank">#${s.rank}</span>
+                    <span class="leaderboard-name">${s.name}</span>
+                    <span class="leaderboard-score">${s.score}</span>
+                </div>
+            `).join('');
+        }
+
+        // Chat functions
+        function loadChatMessages() {
+            const messages = JSON.parse(localStorage.getItem('gameChat')) || [];
+            const chatMessages = document.getElementById('chatMessages');
+            chatMessages.innerHTML = messages.slice(-10).map(msg => `
+                <div class="chat-message">
+                    <strong>${msg.player}:</strong> ${msg.text}
+                </div>
+            `).join('');
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const text = input.value.trim();
+
+            if (text) {
+                let messages = JSON.parse(localStorage.getItem('gameChat')) || [];
+                messages.push({ player: currentPlayer.name, text });
+                localStorage.setItem('gameChat', JSON.stringify(messages));
+                loadChatMessages();
+                input.value = '';
+            }
+        }
+
+        // Update UI
+        function updateUI() {
+            document.getElementById('playerScore').textContent = currentPlayer.score;
+            document.getElementById('blocksPlaced').textContent = currentPlayer.blocksPlaced;
+            document.getElementById('playerKills').textContent = currentPlayer.kills;
+            document.getElementById('playerDeaths').textContent = currentPlayer.deaths;
+        }
+
+        // Game loop
+        function startGameLoop() {
+            function gameLoop() {
+                // Clear canvas
+                ctx.fillStyle = '#87ceeb';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Draw ground
+                ctx.fillStyle = '#8b7355';
+                ctx.fillRect(0, canvas.height - 50, canvas.width, 50);
+
+                // Draw blocks
+                gameWorld.forEach(block => {
+                    ctx.fillStyle = block.color;
+                    ctx.fillRect(block.x, block.y, 30, 30);
+                    ctx.strokeStyle = '#000';
+                    ctx.lineWidth = 1;
+                    ctx.strokeRect(block.x, block.y, 30, 30);
+                });
+
+                // Update and draw player
+                currentPlayer.update();
+                currentPlayer.draw();
+
+                // Update UI
+                updateUI();
+
+                if (gameRunning) {
+                    requestAnimationFrame(gameLoop);
+                }
+            }
+
+            gameLoop();
+        }
+
+        // Exit game
+        function exitGame() {
+            if (confirm('Exit game and return to home?')) {
+                gameRunning = false;
+                localStorage.removeItem('gameChat');
+                window.location.href = 'home.html';
+            }
+        }
+
+        // Fullscreen
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    alert(`Error attempting to enable fullscreen: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        // Handle chat enter key
+        document.addEventListener('DOMContentLoaded', () => {
+            const chatInput = document.getElementById('chatInput');
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
