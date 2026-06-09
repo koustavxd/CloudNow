@@ -386,9 +386,9 @@
                 <h1>CloudNow</h1>
             </a>
             <div class="nav-links">
-                <a href="#" class="nav-link">Dashboard</a>
-                <a href="#" class="nav-link">Projects</a>
-                <a href="#" class="nav-link">Settings</a>
+                <a href="home.html" class="nav-link">Dashboard</a>
+                <a href="settings.html" class="nav-link">Game Creator</a>
+                <a href="settings.html" class="nav-link">Settings</a>
                 <div class="user-section">
                     <div class="user-info">
                         <div class="user-name" id="userName">User</div>
@@ -405,12 +405,20 @@
         <!-- Welcome Section -->
         <div class="welcome-section">
             <h2>Welcome to CloudNow 🚀</h2>
-            <p>Manage your cloud resources efficiently and securely</p>
+            <p>Create games, manage files, and play with friends</p>
         </div>
 
         <!-- Dashboard Grid -->
         <div class="dashboard-grid">
-            <!-- Card 1: File Management -->
+            <!-- Card 1: Game Creator -->
+            <div class="card">
+                <div class="card-icon">🎮</div>
+                <h3>Game Creator</h3>
+                <p>Create your own multiplayer games with blocks and custom code. Build worlds and play with others!</p>
+                <button class="card-button" onclick="navigateTo('settings.html')">Go to Creator</button>
+            </div>
+
+            <!-- Card 2: File Management -->
             <div class="card">
                 <div class="card-icon">📁</div>
                 <h3>File Management</h3>
@@ -418,7 +426,7 @@
                 <button class="card-button" onclick="navigateTo('files')">Go to Files</button>
             </div>
 
-            <!-- Card 2: Storage -->
+            <!-- Card 3: Storage -->
             <div class="card">
                 <div class="card-icon">💾</div>
                 <h3>Storage</h3>
@@ -426,7 +434,7 @@
                 <button class="card-button" onclick="navigateTo('storage')">Check Storage</button>
             </div>
 
-            <!-- Card 3: Sharing -->
+            <!-- Card 4: Sharing -->
             <div class="card">
                 <div class="card-icon">🔗</div>
                 <h3>Share Files</h3>
@@ -434,7 +442,7 @@
                 <button class="card-button" onclick="navigateTo('share')">Share Now</button>
             </div>
 
-            <!-- Card 4: Collaboration -->
+            <!-- Card 5: Collaboration -->
             <div class="card">
                 <div class="card-icon">👥</div>
                 <h3>Collaboration</h3>
@@ -442,20 +450,12 @@
                 <button class="card-button" onclick="navigateTo('collaborate')">Start Collaborating</button>
             </div>
 
-            <!-- Card 5: Security -->
+            <!-- Card 6: Security -->
             <div class="card">
                 <div class="card-icon">🔒</div>
                 <h3>Security</h3>
                 <p>Manage security settings and access controls for your account.</p>
                 <button class="card-button" onclick="navigateTo('security')">Security Settings</button>
-            </div>
-
-            <!-- Card 6: Analytics -->
-            <div class="card">
-                <div class="card-icon">📊</div>
-                <h3>Analytics</h3>
-                <p>Track your usage statistics and activity history in detail.</p>
-                <button class="card-button" onclick="navigateTo('analytics')">View Analytics</button>
             </div>
         </div>
 
@@ -467,8 +467,8 @@
                     <div class="stat-label">Files</div>
                 </div>
                 <div class="stat">
-                    <div class="stat-value" id="foldersCount">0</div>
-                    <div class="stat-label">Folders</div>
+                    <div class="stat-value" id="gamesCount">0</div>
+                    <div class="stat-label">Games Created</div>
                 </div>
                 <div class="stat">
                     <div class="stat-value" id="storageUsed">0 GB</div>
@@ -486,6 +486,11 @@
             <h2 class="section-title">Why Choose CloudNow?</h2>
             <div class="features-grid">
                 <div class="feature">
+                    <div class="feature-icon">🎮</div>
+                    <h4>Game Creator</h4>
+                    <p>Build and play multiplayer games with a block-based world editor and custom JavaScript code.</p>
+                </div>
+                <div class="feature">
                     <div class="feature-icon">⚡</div>
                     <h4>Lightning Fast</h4>
                     <p>Experience blazing-fast upload and download speeds with our optimized infrastructure.</p>
@@ -498,17 +503,12 @@
                 <div class="feature">
                     <div class="feature-icon">📱</div>
                     <h4>Multi-Device</h4>
-                    <p>Access your files from any device - desktop, tablet, or smartphone.</p>
+                    <p>Access your games and files from any device - desktop, tablet, or smartphone.</p>
                 </div>
                 <div class="feature">
                     <div class="feature-icon">🌍</div>
                     <h4>Global Access</h4>
                     <p>Your data is accessible from anywhere in the world with our global servers.</p>
-                </div>
-                <div class="feature">
-                    <div class="feature-icon">♻️</div>
-                    <h4>Auto Backup</h4>
-                    <p>Automatic backups ensure you never lose important files or data.</p>
                 </div>
                 <div class="feature">
                     <div class="feature-icon">💬</div>
@@ -550,15 +550,19 @@
         // Load dashboard data (mock data for now)
         function loadDashboardData() {
             document.getElementById('filesCount').textContent = '24';
-            document.getElementById('foldersCount').textContent = '12';
+            document.getElementById('gamesCount').textContent = '3';
             document.getElementById('storageUsed').textContent = '15.3 GB';
             document.getElementById('sharesCount').textContent = '8';
         }
 
         // Navigate to different sections
         function navigateTo(section) {
-            alert(`Navigating to ${section}. (Feature coming soon!)`);
-            console.log(`Navigate to: ${section}`);
+            if (section === 'settings.html') {
+                window.location.href = section;
+            } else {
+                alert(`Navigating to ${section}. (Feature coming soon!)`);
+                console.log(`Navigate to: ${section}`);
+            }
         }
 
         // Handle logout
